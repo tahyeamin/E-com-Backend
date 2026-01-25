@@ -7,7 +7,7 @@ export class CategoriesService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateCategoryDto) {
-    const existing = await this.prisma.category.findUnique({
+    const existing = await this.prisma.category.findFirst({
       where: { name: dto.name },
     });
 
@@ -16,7 +16,10 @@ export class CategoriesService {
     }
 
     return this.prisma.category.create({
-      data: dto,
+      data: {
+        name: dto.name,
+        description: dto.description, // এখন এটি কাজ করবেই!
+      },
     });
   }
 
@@ -24,16 +27,12 @@ export class CategoriesService {
     return this.prisma.category.findMany();
   }
 
-  // এখানে id এর টাইপ number করে দেওয়া হয়েছে কারণ আপনার স্কিমাতে Int আছে
   async findOne(id: number) {
     const category = await this.prisma.category.findUnique({
-      where: { id: id }, // প্রিজমা এখন খুশি হবে কারণ সে নাম্বার পাচ্ছে
+      where: { id },
     });
 
-    if (!category) {
-      throw new NotFoundException(`Category with ID ${id} not found`);
-    }
-
+    if (!category) throw new NotFoundException('Category not found');
     return category;
   }
 }
