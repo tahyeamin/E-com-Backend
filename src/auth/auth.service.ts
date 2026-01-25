@@ -13,6 +13,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  // ১. লগইন লজিক
   async login(dto: LoginDto) {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
@@ -39,6 +40,7 @@ export class AuthService {
     };
   }
 
+  // ২. ম্যানেজার তৈরির লজিক (এটি শুধুমাত্র অ্যাডমিন করতে পারবে - কন্ট্রোলারে গার্ড সেট করা আছে)
   async createManager(dto: RegisterDto) {
     const existingUser = await this.prisma.user.findUnique({
       where: { email: dto.email },
@@ -55,6 +57,28 @@ export class AuthService {
         ...dto,
         password: hashedPassword,
         role: 'MANAGER',
+      },
+      select: { id: true, email: true, name: true, role: true },
+    });
+  }
+
+  // ৩. সাধারণ কাস্টমার রেজিস্ট্রেশন লজিক (এটি সবার জন্য উন্মুক্ত থাকবে)
+  async register(dto: RegisterDto) {
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+
+    if (existingUser) {
+      throw new ConflictException('Email already in use');
+    }
+
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+    return this.prisma.user.create({
+      data: {
+        ...dto,
+        password: hashedPassword,
+        role: 'CUSTOMER', // এখানে ডিফল্ট রোল কাস্টমার
       },
       select: { id: true, email: true, name: true, role: true },
     });
