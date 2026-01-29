@@ -40,7 +40,7 @@ model Product {
   description String
   price       Float
   stock       Int
-  images      String[]
+  image      String[]
   isFeatured  Boolean     @default(false) // [ADD] টপ প্রোডাক্ট দেখানোর জন্য
   isActive    Boolean     @default(true)  // [ADD] আউট অফ স্টক বা হাইড করার জন্য
   categoryId  Int
