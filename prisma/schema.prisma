@@ -6,13 +6,31 @@ generator client {
 
 datasource db {
   provider = "postgresql"
- url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
+// ইউজার রোল
 enum Role {
   ADMIN
   MANAGER
   CUSTOMER
+}
+
+// অর্ডারের বিভিন্ন ধাপ ট্র্যাকিং এর জন্য
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+// পেমেন্টের বর্তমান অবস্থা বোঝার জন্য
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
 }
 
 model User {
@@ -23,6 +41,7 @@ model User {
   role      Role     @default(CUSTOMER)
   orders    Order[]
   reviews   Review[]
+  cart      Cart?    // ইউজারের কার্ট রিলেশন
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -30,7 +49,7 @@ model User {
 model Category {
   id          Int       @id @default(autoincrement())
   name        String    @unique
-  description String?   
+  description String?
   products    Product[]
 }
 
@@ -40,29 +59,51 @@ model Product {
   description String
   price       Float
   stock       Int
-  image      String[]
-  isFeatured  Boolean     @default(false) // [ADD] টপ প্রোডাক্ট দেখানোর জন্য
-  isActive    Boolean     @default(true)  // [ADD] আউট অফ স্টক বা হাইড করার জন্য
+  image       String[]
+  isFeatured  Boolean     @default(false)
+  isActive    Boolean     @default(true)
   categoryId  Int
   category    Category    @relation(fields: [categoryId], references: [id])
   orderItems  OrderItem[]
+  cartItems   CartItem[]  // কার্ট আইটেমের সাথে রিলেশন
   reviews     Review[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }
 
+// কার্ট মডেল: ইউজার চেকআউট করার আগে এখানে ডাটা থাকবে
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  user      User       @relation(fields: [userId], references: [id])
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+// কার্টের ভেতরে কোন প্রোডাক্ট কত পিস আছে
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  cartId    Int
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int     @default(1)
+}
+
 model Order {
-  id            Int         @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   userId        Int
-  user          User        @relation(fields: [userId], references: [id])
+  user          User          @relation(fields: [userId], references: [id])
   totalAmount   Float
-  address       String      // [ADD] ডেলিভারি অ্যাড্রেস
-  phone         String      // [ADD] কন্টাক্ট নাম্বার
-  status        String      @default("PENDING") 
-  transactionId String?     @unique // [ADD] পেমেন্ট ভেরিফিকেশনের জন্য
+  address       String
+  phone         String
+  status        OrderStatus   @default(PENDING) // Enum ব্যবহার করা হয়েছে
+  paymentStatus PaymentStatus @default(PENDING) // নতুন ফিল্ড
+  transactionId String?       @unique
   items         OrderItem[]
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model OrderItem {
@@ -72,12 +113,12 @@ model OrderItem {
   productId Int
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
-  price     Float   
+  price     Float
 }
 
 model Review {
   id        Int      @id @default(autoincrement())
-  rating    Int      @default(5) 
+  rating    Int      @default(5)
   comment   String?
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
@@ -85,5 +126,5 @@ model Review {
   product   Product  @relation(fields: [productId], references: [id])
   createdAt DateTime @default(now())
 
-  @@unique([userId, productId]) // [ADD] এক ইউজার এক প্রোডাক্টে একটার বেশি রিভিউ দিতে পারবে না
+  @@unique([userId, productId])
 }
