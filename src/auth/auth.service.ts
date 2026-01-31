@@ -62,7 +62,7 @@ export class AuthService {
     });
   }
 
-  // ৩. সাধারণ কাস্টমার রেজিস্ট্রেশন লজিক (এটি সবার জন্য উন্মুক্ত থাকবে)
+  
   async register(dto: RegisterDto) {
     const existingUser = await this.prisma.user.findUnique({
       where: { email: dto.email },
