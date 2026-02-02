@@ -8,7 +8,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'; // তোমার
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
-  // কার্টে অ্যাড করা
+  // অ্যাড করা
   @Post('add')
   addToCart(@Req() req, @Body() dto: AddToCartDto) {
     return this.cartService.addToCart(req.user.userId, dto);
