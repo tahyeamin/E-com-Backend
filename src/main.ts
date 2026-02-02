@@ -4,12 +4,25 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // ১. CORS কনফিগারেশন
+  app.enableCors({
+    origin: 'http://localhost:3001', 
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, 
+  });
+
+
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
     forbidNonWhitelisted: true,
     transform: true,
   }));
-  await app.listen(3000);
-  console.log(`Server is running on port 3000`);
+
+  
+
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`Backend is running on: http://localhost:${port}`);
 }
 bootstrap();
