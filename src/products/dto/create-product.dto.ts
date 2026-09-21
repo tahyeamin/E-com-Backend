@@ -20,5 +20,5 @@ export class CreateProductDto {
 
   @IsNumber()
   @Type(() => Number)
-  categoryId: number; // এই আইডিটা ক্যাটাগরি টেবিল থেকে আসতে হবে
+  categoryId: number; 
 }
