@@ -9,14 +9,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ইউজার রোল
+
 enum Role {
   ADMIN
   MANAGER
   CUSTOMER
 }
 
-// অর্ডারের বিভিন্ন ধাপ ট্র্যাকিং এর জন্য
+
 enum OrderStatus {
   PENDING
   PROCESSING
@@ -25,7 +25,7 @@ enum OrderStatus {
   CANCELLED
 }
 
-// পেমেন্টের বর্তমান অবস্থা বোঝার জন্য
+
 enum PaymentStatus {
   PENDING
   COMPLETED
@@ -41,7 +41,7 @@ model User {
   role      Role     @default(CUSTOMER)
   orders    Order[]
   reviews   Review[]
-  cart      Cart?    // ইউজারের কার্ট রিলেশন
+  cart      Cart?    
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -65,13 +65,13 @@ model Product {
   categoryId  Int
   category    Category    @relation(fields: [categoryId], references: [id])
   orderItems  OrderItem[]
-  cartItems   CartItem[]  // কার্ট আইটেমের সাথে রিলেশন
+  cartItems   CartItem[]  
   reviews     Review[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }
 
-// কার্ট মডেল: ইউজার চেকআউট করার আগে এখানে ডাটা থাকবে
+
 model Cart {
   id        Int        @id @default(autoincrement())
   userId    Int        @unique
@@ -81,7 +81,7 @@ model Cart {
   updatedAt DateTime   @updatedAt
 }
 
-// কার্টের ভেতরে কোন প্রোডাক্ট কত পিস আছে
+
 model CartItem {
   id        Int     @id @default(autoincrement())
   cartId    Int
@@ -98,8 +98,8 @@ model Order {
   totalAmount   Float
   address       String
   phone         String
-  status        OrderStatus   @default(PENDING) // Enum ব্যবহার করা হয়েছে
-  paymentStatus PaymentStatus @default(PENDING) // নতুন ফিল্ড
+  status        OrderStatus   @default(PENDING) ে
+  paymentStatus PaymentStatus @default(PENDING) 
   transactionId String?       @unique
   items         OrderItem[]
   createdAt     DateTime      @default(now())
