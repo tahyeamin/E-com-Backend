@@ -8,6 +8,6 @@ export class CreateCategoryDto {
   name: string;
 
   @IsString({ message: 'Description must be a string' })
-  @IsOptional() // এটি অপশনাল, না দিলেও সমস্যা নেই
+  @IsOptional() 
   description?: string;
 }
