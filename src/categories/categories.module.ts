@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CategoriesController } from './categories.controller';
-import { PrismaModule } from '../prisma/prisma.module'; // এটি ইম্পোর্ট করুন
+import { PrismaModule } from '../prisma/prisma.module'; 
 
 @Module({
-  imports: [PrismaModule], // এখানে PrismaModule অবশ্যই থাকতে হবে
+  imports: [PrismaModule],
   providers: [CategoriesService],
   controllers: [CategoriesController],
   exports: [CategoriesService], 
