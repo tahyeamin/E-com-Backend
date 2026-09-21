@@ -18,7 +18,7 @@ export class CategoriesService {
     return this.prisma.category.create({
       data: {
         name: dto.name,
-        description: dto.description, // এখন এটি কাজ করবেই!
+        description: dto.description, 
       },
     });
   }
