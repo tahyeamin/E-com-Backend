@@ -7,7 +7,7 @@ export class ReviewService {
   constructor(private prisma: PrismaService) {}
 
   async createReview(userId: number, productId: number, dto: CreateReviewDto) {
-    // চেক করা হচ্ছে ইউজার আগে রিভিউ দিয়েছে কি না
+    
     const existingReview = await this.prisma.review.findUnique({
       where: {
         userId_productId: { userId, productId },
@@ -15,7 +15,7 @@ export class ReviewService {
     });
 
     if (existingReview) {
-      throw new BadRequestException('আপনি ইতিমধ্যে এই প্রোডাক্টে রিভিউ দিয়েছেন!');
+      throw new BadRequestException('You are Done');
     }
 
     return this.prisma.review.create({
@@ -32,7 +32,7 @@ export class ReviewService {
     return this.prisma.review.findMany({
       where: { productId },
       include: {
-        user: { select: { name: true } }, // শুধু ইউজারের নাম দেখাবে
+        user: { select: { name: true } }, ে
       },
       orderBy: { createdAt: 'desc' },
     });
