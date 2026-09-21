@@ -5,6 +5,6 @@ import { UserController } from './users.controller';
 @Module({
   controllers: [UserController],
   providers: [UserService],
-  exports: [UserService], // অন্য মডিউলে ইউজার সার্ভিস লাগলে এটি কাজে দেবে
+  exports: [UserService], 
 })
 export class UserModule {}
