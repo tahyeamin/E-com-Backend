@@ -11,7 +11,7 @@ export class ProductsController {
 
   @Post()
   @UseInterceptors(
-    FilesInterceptor('image', 10, { // Key নাম হবে 'image'
+    FilesInterceptor('image', 10, { 
       storage: diskStorage({
         destination: './uploads',
         filename: (req, file, cb) => {
