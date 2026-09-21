@@ -24,7 +24,7 @@ export class CategoriesController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    // এখানে সার্ভিসে পাঠানোর সময় স্ট্রিংকে নাম্বারে কনভার্ট করা হয়েছে
+    
     return this.categoriesService.findOne(Number(id));
   }
 }
