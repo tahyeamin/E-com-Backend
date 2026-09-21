@@ -13,7 +13,7 @@ export class ProductsService {
     });
 
     if (!category) {
-      throw new NotFoundException(`Category ID ${dto.categoryId} পাওয়া যায়নি!`);
+      throw new NotFoundException(`Category ID ${dto.categoryId} not found`);
     }
 
     return this.prisma.product.create({
@@ -41,7 +41,7 @@ export class ProductsService {
       where: { id },
       include: { category: true },
     });
-    if (!product) throw new NotFoundException('প্রোডাক্ট পাওয়া যায়নি!');
+    if (!product) throw new NotFoundException('Product not Found');
     return product;
   }
 
